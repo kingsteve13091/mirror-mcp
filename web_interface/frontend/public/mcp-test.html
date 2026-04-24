@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP 状态测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-success { background-color: #28a745; color: white; }
+    </style>
+</head>
+<body>
+    <h1>🔍 MCP 状态测试页面</h1>
+    
+    <div class="status info">
+        <h3>测试说明</h3>
+        <p>这个页面用于测试MCP服务器和前端的连接状态。</p>
+    </div>
+    
+    <div>
+        <button class="btn-primary" onclick="testServers()">测试服务器API</button>
+        <button class="btn-primary" onclick="testTools()">测试工具API</button>
+        <button class="btn-success" onclick="testWebSocket()">测试WebSocket</button>
+        <button class="btn-success" onclick="clearResults()">清空结果</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(title, content, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `status ${type}`;
+            div.innerHTML = `<h4>${title}</h4><pre>${JSON.stringify(content, null, 2)}</pre>`;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function testServers() {
+            try {
+                const response = await fetch('/api/mcp/servers');
+                const data = await response.json();
+                addResult('服务器API测试', data, response.ok ? 'success' : 'error');
+            } catch (error) {
+                addResult('服务器API测试', { error: error.message }, 'error');
+            }
+        }
+        
+        async function testTools() {
+            try {
+                const response = await fetch('/api/mcp/tools');
+                const data = await response.json();
+                addResult('工具API测试', data, response.ok ? 'success' : 'error');
+            } catch (error) {
+                addResult('工具API测试', { error: error.message }, 'error');
+            }
+        }
+        
+        function testWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.hostname + ':8000';
+            const wsUrl = `${protocol}//${host}/ws/test-client`;
+            
+            addResult('WebSocket测试', { url: wsUrl, status: '连接中...' }, 'info');
+            
+            const ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                addResult('WebSocket连接', { status: '成功', url: wsUrl }, 'success');
+                ws.send(JSON.stringify({ type: 'get_mcp_status' }));
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                addResult('WebSocket消息', data, 'success');
+            };
+            
+            ws.onerror = (error) => {
+                addResult('WebSocket错误', { error: error.message }, 'error');
+            };
+            
+            setTimeout(() => {
+                ws.close();
+            }, 3000);
+        }
+        
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+        
+        // 页面加载时自动测试
+        window.onload = () => {
+            addResult('页面加载', { timestamp: new Date().toISOString() }, 'info');
+        };
+    </script>
+</body>
+</html>
