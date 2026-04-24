@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./data/banner.png" alt="MCP Mirror Banner" width="100%">
+  <img src="./banner.png" alt="MCP Mirror Banner" width="100%">
 </p>
 
 # MCP Mirror
