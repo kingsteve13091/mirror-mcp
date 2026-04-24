@@ -1,124 +1,104 @@
-# ✨ MCP Mirror
+<p align="center">
+  <img src="./data/banner.png" alt="MCP Mirror Banner" width="100%">
+</p>
 
-> **Memory-Governed MCP Orchestration for Tool-Using LLM Agents**
+# MCP Mirror
 
-MCP Mirror is a **visual orchestration system** for building and studying  
-**memory-aware, tool-using LLM agents** over long horizons.
+MCP Mirror is a visual MCP orchestration system for building and studying memory-governed tool-using LLM agents.
 
-It combines:
+It combines a React + TypeScript frontend, a FastAPI backend, real MCP runtimes, and an explicit memory governance layer for long-horizon tool use. Instead of treating tool calls as prompt-only behavior, MCP Mirror separates intent generation from routing, execution control, verification, and experience write-back.
 
-- ⚡ React + TypeScript frontend  
-- 🧠 FastAPI backend  
-- 🔌 Real MCP runtimes  
-- 🧩 Explicit memory governance layer  
+## Why MCP Mirror
 
----
+Most MCP clients focus on connecting tools and displaying results. MCP Mirror is built around a different question:
 
-## 🚀 What Makes It Different
+How can an agent use tools stably, audibly, and learnably over many turns?
 
-Most MCP clients:
+The system introduces three core ideas:
 
-> connect tools → call tools → show results  
+- `Memory Plane`: an explicit governance layer between task intent and tool execution
+- `Recipe`: learned procedural memory distilled from successful real tool executions
+- `Guard`: learned failure memory distilled from repeated or risky failed executions
 
-**MCP Mirror instead asks:**
+Together, these components support memory-aware routing, failure prevention, bounded recovery, and auditable replay.
 
-> How can agents use tools **stably, audibly, and learnably over time?**
+## Core Features
 
-### Core Ideas
+- Real MCP runtime integration with official and external MCP servers
+- Dynamic tool discovery from configured MCP servers at runtime
+- Explicit `Memory Plane` for routing, retention, forgetting, attribution, and rollback
+- `Tool Execution Memory` with dual-channel memory:
+  - `recipe` for successful procedural reuse
+  - `guard` for repeated failure prevention
+- Harness-style execution governance for parameter compilation, schema-aware validation, prechecks, result verification, and bounded recovery
+- Structured runtime event streaming to the frontend
+- Workspace-level MCP server pools
+- Lightweight agent runtime with approvals, replay, and task lifecycle control
+- External multimodal reasoning support via custom FastMCP services
 
-- 🧠 **Memory Plane**  
-  Governs routing, execution, and learning (not just prompts)
+## Design Principle
 
-- 📘 **Recipe**  
-  Procedural memory distilled from successful executions
+Do not trust model-declared pseudo-calls. Trust only restricted real runtime events.
 
-- ⚠️ **Guard**  
-  Failure memory that prevents repeated mistakes
+## What You Can See in the UI
 
-👉 Together, they enable:
+The frontend is not just a chat surface. It also exposes the system's internal execution objects, including:
 
-- memory-aware routing  
-- failure prevention  
-- bounded recovery  
-- auditable execution replay  
+- main chat workspace
+- MCP runtime center
+- Tool Execution Memory panel
+- Memory Plane and routing diagnostics
+- approval and replay flows
+- task and health panels
 
----
+This makes the governance process inspectable instead of hiding it inside prompts.
 
-## 🧩 System Architecture
+## Requirements
 
-```text
-User → Intent → Memory Plane → Tool Routing → Harness → Runtime → Feedback → Memory
-````
+Current development is Windows-first.
 
-### Layers
+- Python `>= 3.12`
+- Node.js `18` to `22` LTS
+- PowerShell
+- npm
+- FastMCP or MCP-compatible runtime dependencies
 
-1. **Frontend** — chat + visualization panels
-2. **Backend** — orchestration & session control
-3. **Memory Plane** — governance & routing
-4. **Tool Memory** — recipe / guard
-5. **Harness Runtime** — safe execution
-6. **Real MCP Runtime** — actual tools
+Notes:
 
----
+- The provided launch scripts are PowerShell-based
+- Linux and macOS support may require adapting the startup scripts
+- Custom multimodal services are expected to run as external persistent FastMCP SSE services
 
-## 🔥 Key Features
+## Quick Start
 
-* ✅ Real MCP runtime integration (official + external)
-* 🔍 Dynamic tool discovery
-* 🧠 Explicit Memory Plane (routing / rollback / attribution)
-* 📘 Dual memory system:
+### 1. Clone the repository
 
-  * `recipe` (success reuse)
-  * `guard` (failure blocking)
-* 🛡️ Execution harness:
-
-  * validation
-  * prechecks
-  * recovery
-* 📡 Structured event streaming
-* 🧪 Research-ready evaluation environment
-* 🖥️ Full visual observability (not a black box)
-
----
-
-## 🖼️ Interface Overview
-
-* 💬 Chat workspace
-* 🧠 Memory Plane visualization
-* 📘 Tool Execution Memory panel
-* 🧰 MCP runtime center
-* 🔁 Replay & approval system
-
----
-
-## ⚡ Quick Start
-
-### 1. Clone
-
-```bash
-git clone <your-repo-url>
-cd mirror_mcp
+```powershell
+git clone [https://github.com/kingsteve13091/mirror-mcp.git](https://github.com/kingsteve13091/mirror-mcp.git)
+cd mirror-mcp
 ```
 
-### 2. Backend setup
+### 2. Create a Python environment
 
-```bash
+```powershell
 python -m venv .venv
-.\.venv\Scripts\activate
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-### 3. Frontend
+If you use `uv`, you can also install from `pyproject.toml` and `uv.lock` with your preferred workflow.
 
-```bash
-cd web_interface/frontend
+### 3. Install frontend dependencies
+
+```powershell
+cd web_interface\frontend
 npm install
-cd ../..
+cd ..\..
 ```
 
-### 4. Environment
+### 4. Configure environment variables
 
-Create `.env`:
+Create a `.env` file in the project root for any model or provider keys required by your deployment.
 
 ```env
 OPENAI_API_KEY=...
@@ -126,117 +106,109 @@ OPENROUTER_API_KEY=...
 SILICONFLOW_API_KEY=...
 ```
 
-### 5. Run
+Do not commit secrets.
 
-```bash
+### 5. Validate configuration
+
+```powershell
+python .\scripts\validate_config.py
+```
+
+### 6. Start the backend
+
+```powershell
 .\scripts\start_backend.ps1
+```
+
+### 7. Start the frontend
+
+Open a second terminal:
+
+```powershell
 .\scripts\start_frontend.ps1
 ```
 
-* Frontend: [http://localhost:3000](http://localhost:3000)
-* Backend: [http://localhost:8000/docs](http://localhost:8000/docs)
+Available endpoints:
 
----
+- frontend: `http://localhost:3000`
+- backend API docs: `http://localhost:8000/docs`
 
-## 🔌 External MCP (CDAR)
+## Running External Custom Services
 
-Run separately:
+Custom multimodal reasoning services must run as external persistent FastMCP servers. They should not be imported directly into the backend process.
 
-```bash
+You can start them manually with:
+
+```powershell
 .\scripts\start_external_mcp_servers.ps1
 ```
 
 Default endpoint:
 
-```
-http://127.0.0.1:9001/sse
-```
+- `http://127.0.0.1:9001/sse`
 
----
+## Research Boundary
 
-## 🧪 Research Positioning
+MCP Mirror intentionally separates the following concepts:
 
-MCP Mirror is designed as:
+- `recipe`: learned procedural tool memory from successful real executions
+- `guard`: learned counterfactual failure memory from repeated failures
+- `skill`: explicit human-authored capability package
+- `system prompt`: session-level instruction layer
 
-* ✅ Tool-use orchestration system
-* ✅ Memory-governed agent research platform
-* ✅ Execution audit & evaluation environment
+These are not interchangeable. In particular:
 
-Not intended (yet) as:
+- `recipe` is not a `skill`
+- authored skills are not the main research contribution
+- Memory Plane governance is not the same thing as generic prompt concatenation
 
-* ❌ fully autonomous general agent
-* ❌ benchmark-optimized planner
+## Current Scope
 
----
+MCP Mirror is currently strongest as:
 
-## 🧠 Key Design Principle
+- a real MCP runtime orchestration system
+- a memory-governed tool-use research platform
+- a mechanism evaluation environment for routing, failure blocking, and auditable execution
 
-> ❌ Do NOT trust model-declared tool calls
-> ✅ Trust only real runtime execution events
+It is not yet positioned as:
 
----
+- a general-purpose autonomous agent benchmark winner
+- a fully unconstrained planner for arbitrary open-world tool ecosystems
 
-## 📁 Project Structure
+## Documentation
 
-```text
-mirror_mcp/
-├─ web_interface/
-│  ├─ backend/
-│  └─ frontend/
-├─ scripts/
-├─ docs/
-├─ experiments/
-├─ datasets/
-└─ mcp_config.json
-```
+- `docs/ARCHITECTURE.md`
+- `docs/RECIPE_VS_SKILLS_COMPARISON.md`
+- `docs/RESEARCH_PLAN.md`
+- `docs/PAPER_MAINLINE_EXPERIMENT_MATRIX.md`
 
----
+## Contributing
 
-## 📚 Documentation
+Contributions are welcome, especially in these areas:
 
-* `docs/ARCHITECTURE.md`
-* `docs/RESEARCH_PLAN.md`
-* `docs/RECIPE_VS_SKILLS_COMPARISON.md`
+- MCP runtime integration
+- execution observability
+- Memory Plane analysis and diagnostics
+- Tool Execution Memory evaluation
+- frontend runtime visualization
+- safer harness policies and approval flows
 
----
+If you plan to make architectural changes, please update the corresponding documentation in `docs/`.
 
-## 🤝 Contributing
+## Citation
 
-We welcome contributions in:
-
-* MCP runtime integration
-* Memory Plane design
-* execution observability
-* frontend visualization
-* safety & governance
-
----
-
-## 📖 Citation
+If you use MCP Mirror in academic work, please cite the corresponding paper or project page once the public citation record is finalized.
 
 ```bibtex
 @software{mcp_mirror,
   title  = {MCP Mirror},
-  year   = {2026}
+  author = {Cheong Yik Sheng},
+  year   = {2026},
+  url    = {[https://github.com/kingsteve13091/mirror-mcp](https://github.com/kingsteve13091/mirror-mcp)}
 }
 ```
 
----
+## License
 
-## 📜 License
-
-⚠️ Not yet specified
-(Add MIT / Apache-2.0 before open-source release)
-
-```
-
----
-
-如果你下一步想**再拉高一个档次（顶会级 GitHub 页面）**，我可以帮你加：
-
-- :contentReference[oaicite:0]{index=0}
-- :contentReference[oaicite:1]{index=1}
-- :contentReference[oaicite:2]{index=2}
-
-直接说一声你要“:contentReference[oaicite:3]{index=3}”，我给你做一个可以放论文里的版本。
+This project is licensed under the MIT License - see the LICENSE file for details.
 ```
