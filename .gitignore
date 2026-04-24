@@ -1,0 +1,70 @@
+﻿# Local environments and caches
+.venv/
+.pytest_cache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Node dependencies and build outputs
+node_modules/
+web_interface/frontend/node_modules/
+web_interface/frontend/build/
+web_interface/frontend/logs/
+artifacts/browser_e2e/node_modules/
+
+# Local bundled tools
+tools/node-*/
+tools/node/
+tools/node-lts/
+
+# Runtime logs
+*.log
+artifacts/logs/
+mcp_chat.log
+web_interface/backend/mcp_chat.log
+
+# Temporary and scratch files
+tmp/
+artifacts/tmp/
+artifacts/manual_test/
+artifacts/tool_call_smoke/
+artifacts/browser_e2e/
+artifacts/tmp_cherry_studio_src/
+artifacts/reference/
+
+# Runtime state and generated memory artifacts
+artifacts/memory/
+artifacts/guards/
+artifacts/recipes/
+artifacts/npm_cache/
+artifacts/uv_cache/
+artifacts/*.jsonl
+artifacts/*.err.log
+artifacts/*.out.log
+artifacts/*-summary.json
+artifacts/*smoke*.json
+artifacts/*regression*.json
+artifacts/client-*.json
+artifacts/fresh-reg-*.json
+artifacts/verify-upload-*.json
+artifacts/websearch-smoke-*.json
+
+# Uploads and local generated files
+web_interface/backend/uploads/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Keep selected artifact docs and examples if needed
+!artifacts/examples/
+!artifacts/examples/**
+!artifacts/algorithm_params.json

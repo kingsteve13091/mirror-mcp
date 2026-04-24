@@ -1,0 +1,33 @@
+# FastMCP framework for Model Context Protocol
+fastmcp>=2.13.0
+
+# Official MCP SDK for real MCP server connections
+mcp>=1.19.0
+
+# HTTP requests for API calls
+requests>=2.31.0
+
+# Image processing (optional, for local image handling)
+Pillow>=10.0.0
+
+# JSON schema validation (optional, for better data validation)
+jsonschema>=4.17.0
+
+# Async HTTP client (alternative to requests for better async support)
+aiohttp>=3.8.0
+
+# Python typing extensions for better type hints
+typing-extensions>=4.5.0
+
+# Base64 encoding/decoding optimizations
+base64io>=1.0.0
+
+# Development and testing dependencies (optional)
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0
+
+# Code formatting and linting (optional)
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.0.0 

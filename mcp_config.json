@@ -1,0 +1,57 @@
+{
+  "mcpServers": {
+    "cdar_mcp": {
+      "disabled": false,
+      "description": "External CDAR FastMCP server (persistent)",
+      "timeout": 60,
+      "url": "http://127.0.0.1:9001/sse",
+      "transport": "sse"
+    },
+    "filesystem": {
+      "disabled": false,
+      "description": "Official MCP filesystem server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "D:\\mirror_mcp"
+      ],
+      "timeout": 60
+    },
+    "fetch": {
+      "disabled": false,
+      "description": "Official MCP fetch server",
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      },
+      "timeout": 60
+    },
+    "memory": {
+      "disabled": false,
+      "description": "Official MCP memory server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {
+        "MEMORY_FILE_PATH": "D:\\mirror_mcp\\artifacts\\memory\\mcp_memory.jsonl"
+      },
+      "timeout": 60
+    },
+    "sequential_thinking": {
+      "disabled": false,
+      "description": "Official MCP sequential thinking server",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "timeout": 60
+    }
+  }
+}
