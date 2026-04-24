@@ -1,169 +1,124 @@
-﻿# MCP Mirror
+# ✨ MCP Mirror
 
-MCP Mirror is a visual MCP orchestration system for building and studying memory-governed tool-using LLM agents.
+> **Memory-Governed MCP Orchestration for Tool-Using LLM Agents**
 
-It combines a React + TypeScript frontend, a FastAPI backend, real MCP runtimes, and an explicit memory governance layer designed for long-horizon tool use. Rather than treating tool calls as prompt-only behavior, MCP Mirror separates intent generation from routing, execution control, verification, and experience write-back.
+MCP Mirror is a **visual orchestration system** for building and studying  
+**memory-aware, tool-using LLM agents** over long horizons.
 
-## Why MCP Mirror
+It combines:
 
-Most MCP clients focus on connecting tools and displaying results. MCP Mirror is built around a different question:
+- ⚡ React + TypeScript frontend  
+- 🧠 FastAPI backend  
+- 🔌 Real MCP runtimes  
+- 🧩 Explicit memory governance layer  
 
-How can an agent use tools stably, audibly, and learnably over many turns?
+---
 
-The system introduces three research-facing ideas:
+## 🚀 What Makes It Different
 
-- `Memory Plane`: an explicit governance layer between task intent and tool execution
-- `Recipe`: learned procedural memory distilled from successful real tool executions
-- `Guard`: learned failure memory distilled from repeated or risky failed executions
+Most MCP clients:
 
-Together, these components support memory-aware routing, failure prevention, execution recovery, and auditable replay.
+> connect tools → call tools → show results  
 
-## Core Features
+**MCP Mirror instead asks:**
 
-- Real MCP runtime integration with official and external MCP servers
-- Dynamic tool discovery from configured MCP servers at runtime
-- Explicit `Memory Plane` for routing, retention, forgetting, attribution, and rollback
-- `Tool Execution Memory` with dual-channel memory:
-  - `recipe` for successful procedural reuse
-  - `guard` for repeated failure prevention
-- Harness-style execution governance for:
-  - parameter compilation
-  - schema-aware validation
-  - pre-execution checks
-  - result verification
-  - bounded recovery
-- Structured event streaming to the frontend:
-  - `action_event`
-  - `tool_result`
-  - `response_start`
-  - `response_delta`
-  - `response_done`
-- Workspace-level MCP server pools via `.mcp-mirror/mcp.json`
-- Lightweight agent runtime with task lifecycle, approvals, replay, and system-operation control
-- External multimodal reasoning support via `cdar_mcp`
+> How can agents use tools **stably, audibly, and learnably over time?**
 
-## Architecture Overview
+### Core Ideas
 
-MCP Mirror is organized around the following layers:
+- 🧠 **Memory Plane**  
+  Governs routing, execution, and learning (not just prompts)
 
-1. Frontend Interaction Layer
-- chat workspace
-- settings
-- task center
-- MCP runtime panels
-- Tool Execution Memory and Memory Plane visualization panels
+- 📘 **Recipe**  
+  Procedural memory distilled from successful executions
 
-2. Backend Orchestration Layer
-- session management
-- context assembly
-- provider dispatch
-- stateful orchestration
+- ⚠️ **Guard**  
+  Failure memory that prevents repeated mistakes
 
-3. Memory Governance Layer
-- routing suggestions
-- retention and forgetting
-- attribution
-- rollback
-- governance ledger
+👉 Together, they enable:
 
-4. Tool Execution Memory Layer
-- `recipe` abstraction from successful trajectories
-- `guard` abstraction from failed or risky trajectories
+- memory-aware routing  
+- failure prevention  
+- bounded recovery  
+- auditable execution replay  
 
-5. Harness Runtime
-- parameter compilation
-- schema validation
-- path and URL resolution
-- prechecks
-- approval gates
-- bounded recovery
+---
 
-6. Real Runtime Layer
-- official MCP servers
-- workspace MCP servers
-- external `cdar_mcp` FastMCP service
-
-The key design principle is simple:
-
-Do not trust model-declared pseudo-calls. Trust only restricted real runtime events.
-
-## Repository Layout
+## 🧩 System Architecture
 
 ```text
-mirror_mcp/
-|- AGENTS.md
-|- README.md
-|- mcp_config.json
-|- cdar_mcp.py
-|- artifacts/
-|- datasets/
-|- docs/
-|- experiments/
-|- scripts/
-`- web_interface/
-   |- backend/
-   `- frontend/
-```
+User → Intent → Memory Plane → Tool Routing → Harness → Runtime → Feedback → Memory
+````
 
-Important files:
+### Layers
 
-- `web_interface/backend/app.py`: single backend entrypoint
-- `web_interface/backend/enhanced_mcp_manager.py`: runtime MCP management
-- `web_interface/backend/memory_control_plane.py`: Memory Plane
-- `web_interface/backend/tool_execution_memory.py`: Recipe and Guard memory
-- `web_interface/backend/context_engine.py`: context assembly
-- `mcp_config.json`: global MCP config source of truth
+1. **Frontend** — chat + visualization panels
+2. **Backend** — orchestration & session control
+3. **Memory Plane** — governance & routing
+4. **Tool Memory** — recipe / guard
+5. **Harness Runtime** — safe execution
+6. **Real MCP Runtime** — actual tools
 
-## Requirements
+---
 
-Current development is Windows-first.
+## 🔥 Key Features
 
-Recommended environment:
+* ✅ Real MCP runtime integration (official + external)
+* 🔍 Dynamic tool discovery
+* 🧠 Explicit Memory Plane (routing / rollback / attribution)
+* 📘 Dual memory system:
 
-- Python `>= 3.12`
-- Node.js `18` to `22` LTS
-- PowerShell
-- npm
-- FastMCP / MCP-compatible runtime dependencies
+  * `recipe` (success reuse)
+  * `guard` (failure blocking)
+* 🛡️ Execution harness:
 
-Notes:
+  * validation
+  * prechecks
+  * recovery
+* 📡 Structured event streaming
+* 🧪 Research-ready evaluation environment
+* 🖥️ Full visual observability (not a black box)
 
-- The provided launch scripts are PowerShell-based
-- Linux and macOS support may require adapting the startup scripts
-- `cdar_mcp` is expected to run as an external persistent FastMCP SSE service
+---
 
-## Quick Start
+## 🖼️ Interface Overview
 
-### 1. Clone the repository
+* 💬 Chat workspace
+* 🧠 Memory Plane visualization
+* 📘 Tool Execution Memory panel
+* 🧰 MCP runtime center
+* 🔁 Replay & approval system
 
-```powershell
+---
+
+## ⚡ Quick Start
+
+### 1. Clone
+
+```bash
 git clone <your-repo-url>
 cd mirror_mcp
 ```
 
-### 2. Create a Python environment
+### 2. Backend setup
 
-```powershell
+```bash
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+.\.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-If you use `uv`, you can also install from `pyproject.toml` / `uv.lock` with your preferred workflow.
+### 3. Frontend
 
-### 3. Install frontend dependencies
-
-```powershell
-cd web_interface\frontend
+```bash
+cd web_interface/frontend
 npm install
-cd ..\..
+cd ../..
 ```
 
-### 4. Configure environment variables
+### 4. Environment
 
-Create a `.env` file in the project root for any model or provider keys required by your deployment.
-
-Typical examples include:
+Create `.env`:
 
 ```env
 OPENAI_API_KEY=...
@@ -171,187 +126,117 @@ OPENROUTER_API_KEY=...
 SILICONFLOW_API_KEY=...
 ```
 
-Do not commit secrets.
+### 5. Run
 
-### 5. Validate MCP configuration
-
-```powershell
-python .\scripts\validate_config.py
-```
-
-### 6. Start the backend
-
-```powershell
+```bash
 .\scripts\start_backend.ps1
-```
-
-This script will:
-
-- activate `.venv` if present
-- validate `mcp_config.json`
-- ensure the backend port is free
-- ensure the external CDAR FastMCP service is available
-- launch FastAPI on `http://localhost:8000`
-
-### 7. Start the frontend
-
-Open a second terminal:
-
-```powershell
 .\scripts\start_frontend.ps1
 ```
 
-The frontend will run at:
+* Frontend: [http://localhost:3000](http://localhost:3000)
+* Backend: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-- `http://localhost:3000`
+---
 
-Backend API docs will be available at:
+## 🔌 External MCP (CDAR)
 
-- `http://localhost:8000/docs`
+Run separately:
 
-## Running the External CDAR Service
-
-`cdar_mcp` must run as an external persistent FastMCP server. It should not be imported directly into the backend process.
-
-The backend launcher will try to ensure it is available automatically, but you can also start it manually:
-
-```powershell
+```bash
 .\scripts\start_external_mcp_servers.ps1
 ```
 
 Default endpoint:
 
-- `http://127.0.0.1:9001/sse`
+```
+http://127.0.0.1:9001/sse
+```
 
-## MCP Configuration
+---
 
-Global MCP configuration is defined in:
+## 🧪 Research Positioning
 
-- `mcp_config.json`
+MCP Mirror is designed as:
 
-Workspace-level MCP configuration can additionally be provided via:
+* ✅ Tool-use orchestration system
+* ✅ Memory-governed agent research platform
+* ✅ Execution audit & evaluation environment
 
-- `.mcp-mirror/mcp.json`
+Not intended (yet) as:
 
-This allows different projects or workspaces to expose different MCP server pools without modifying the main application code.
+* ❌ fully autonomous general agent
+* ❌ benchmark-optimized planner
 
-Design rules:
+---
 
-- MCP tools are registered at the server level, not one-by-one in backend code
-- Tool lists are discovered dynamically from the runtime
-- Agent or session visibility is controlled at the server level
-- Official stdio MCP servers should remain official and should not be replaced by fake wrapper servers
+## 🧠 Key Design Principle
 
-## Research Boundary
+> ❌ Do NOT trust model-declared tool calls
+> ✅ Trust only real runtime execution events
 
-MCP Mirror intentionally separates the following concepts:
+---
 
-- `recipe`: learned procedural tool memory from successful real executions
-- `guard`: learned counterfactual failure memory from repeated failures
-- `skill`: explicit human-authored capability package
-- `system prompt`: session-level instruction layer
+## 📁 Project Structure
 
-These are not interchangeable.
+```text
+mirror_mcp/
+├─ web_interface/
+│  ├─ backend/
+│  └─ frontend/
+├─ scripts/
+├─ docs/
+├─ experiments/
+├─ datasets/
+└─ mcp_config.json
+```
 
-In particular:
+---
 
-- `recipe` is not a `skill`
-- authored skills are not the main research contribution
-- Memory Plane governance is distinct from simple prompt concatenation or generic chat history
+## 📚 Documentation
 
-## Current Scope
+* `docs/ARCHITECTURE.md`
+* `docs/RESEARCH_PLAN.md`
+* `docs/RECIPE_VS_SKILLS_COMPARISON.md`
 
-MCP Mirror is currently strongest as:
+---
 
-- a real MCP runtime orchestration system
-- a memory-governed tool-use research platform
-- a mechanism evaluation environment for routing, failure blocking, and auditable execution
+## 🤝 Contributing
 
-It is not yet positioned as:
+We welcome contributions in:
 
-- a general-purpose autonomous agent benchmark winner
-- a fully unconstrained planner for arbitrary open-world tool ecosystems
+* MCP runtime integration
+* Memory Plane design
+* execution observability
+* frontend visualization
+* safety & governance
 
-## Screens and Panels
+---
 
-The frontend is not just a chat surface. It also acts as a visualization layer for core runtime objects, including:
-
-- main chat workspace
-- task center
-- MCP runtime center
-- Tool Execution Memory panel
-- Memory Plane and routing diagnostics
-- health and onboarding panels
-- approval and replay flows
-
-This makes the internal governance process inspectable rather than hidden inside prompts.
-
-## Development Notes
-
-Single-source operational rules:
-
-1. Backend entrypoint: `web_interface/backend/app.py`
-2. MCP config source of truth: `mcp_config.json`
-3. Validate configuration before startup
-4. CDAR failure should not crash backend startup
-5. Secrets must come from environment variables or runtime overrides
-6. Architecture changes should be reflected in `docs/ARCHITECTURE.md`
-
-## Testing and Utility Scripts
-
-Useful scripts under `scripts/` include:
-
-- `start_backend.ps1`
-- `start_frontend.ps1`
-- `start_external_mcp_servers.ps1`
-- `validate_config.py`
-- `run_all_experiments.py`
-- `agent_runtime_smoke.py`
-- `browser_runtime_smoke.py`
-- `mcp_onboarding_gate.py`
-
-The repository also contains dataset generation, audit, and experiment utilities for internal evaluation workflows.
-
-## Documentation
-
-See:
-
-- `docs/ARCHITECTURE.md`
-- `docs/RECIPE_VS_SKILLS_COMPARISON.md`
-- `docs/RESEARCH_PLAN.md`
-- `docs/PAPER_MAINLINE_EXPERIMENT_MATRIX.md`
-
-## Contributing
-
-Contributions are welcome, especially in the following areas:
-
-- MCP runtime integration
-- execution observability
-- Memory Plane analysis and diagnostics
-- Tool Execution Memory evaluation
-- frontend runtime visualization
-- safer harness policies and approval flows
-- portability beyond Windows-first scripts
-
-If you plan to make architectural changes, please update the corresponding documentation in `docs/`.
-
-## Citation
-
-If you use MCP Mirror in academic work, please cite the corresponding paper or project page once the public citation record is finalized.
-
-Example placeholder:
+## 📖 Citation
 
 ```bibtex
 @software{mcp_mirror,
   title  = {MCP Mirror},
-  author = {Author(s) to be added},
-  year   = {2026},
-  url    = {https://github.com/your-org/mcp-mirror}
+  year   = {2026}
 }
 ```
 
-## License
+---
 
-This repository does not yet include a license file.
+## 📜 License
 
-Before public open-source release, add a `LICENSE` file and update this section accordingly. Common choices for research software include `MIT`, `Apache-2.0`, or `BSD-3-Clause`.
+⚠️ Not yet specified
+(Add MIT / Apache-2.0 before open-source release)
+
+```
+
+---
+
+如果你下一步想**再拉高一个档次（顶会级 GitHub 页面）**，我可以帮你加：
+
+- :contentReference[oaicite:0]{index=0}
+- :contentReference[oaicite:1]{index=1}
+- :contentReference[oaicite:2]{index=2}
+
+直接说一声你要“:contentReference[oaicite:3]{index=3}”，我给你做一个可以放论文里的版本。
+```
